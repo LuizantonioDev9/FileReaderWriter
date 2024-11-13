@@ -2,10 +2,7 @@ package application;
 
 import model.entities.Product;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +22,8 @@ public class Program {
         //pegar o caminho da pasta e armazenar em uma variavel
         String sourceFolderStr = sourceFile.getParent();
 
+        String targetSourceFolder = sourceFolderStr + "\\out\\summary.csv";
+
         //criar uma pasta apartir de um boolean
         //ira da erro se a pasta existir
         boolean success = new File(sourceFolderStr + "\\out").mkdir();
@@ -36,9 +35,20 @@ public class Program {
                 String name = folder[0];
                 double price = Double.parseDouble(folder[1]);
                 int quantity = Integer.parseInt(folder[2]);
-                list.add()
+                list.add(new Product(name,price,quantity));
                 System.out.println(itemCsv);
                 itemCsv = br.readLine();
+            }
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetSourceFolder))) {
+                for(Product item : list) {
+                    bw.write(item.getName() + ", " + item.total());
+                    bw.newLine();
+                }
+            }
+
+            catch (IOException e) {
+                System.out.println("Error: " + e.getMessage());
             }
         }
         catch(IOException e) {
